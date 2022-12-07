@@ -1799,7 +1799,7 @@ def DL_inpaint_edge(mesh,
                     mesh.nodes[erode_node]['color'] = info['update_color']
                     np_image[(erode_node[0], erode_node[1])] = info['update_color']
     new_edge_ccs = [set() for _ in range(mesh.graph['max_edge_id'] + 1)]
-    for node in mesh.nodes:
+    for node in list(mesh.nodes):
         if len(node) == 2:
             mesh.remove_node(node)
             continue
