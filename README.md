@@ -31,7 +31,7 @@ In IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2020.
 and the Python dependencies listed in [requirements.txt](requirements.txt)
 - To get started, please run the following commands:
     ```bash
-    conda create -n 3DP python=3.9.7 anaconda
+    conda create -n 3DP python=3.9 anaconda
     conda activate 3DP
     pip install -r requirements.txt
     conda install pytorch==1.12.0 torchvision==0.13.0 -c pytorch
