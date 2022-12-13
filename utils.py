@@ -143,7 +143,7 @@ def clean_far_edge_new(input_edge, end_depth_maps, mask, context, global_mesh, i
     for cc in ccs:
         end_pts.append(set())
         for node in cc:
-            if mesh.nodes[node].get('cnt') is not None:
+            if mesh.nodes[node].get('cnt') != None:
                 end_pts[-1].add((node[0], node[1], mesh.nodes[node]['depth']))    
     predef_npaths = [None for _ in range(len(ccs))]
     fpath_map = np.zeros_like(input_edge) - 1
@@ -411,12 +411,12 @@ def plan_path_e2e(mesh, cc, end_pts, global_mesh, input_edge, mask, valid_map, i
                 new_loc_nes = [xx for xx in [(new_loc[0] + 1, new_loc[1]), (new_loc[0] - 1, new_loc[1]),
                                             (new_loc[0], new_loc[1] + 1), (new_loc[0], new_loc[1] - 1)]\
                                     if xx[0] >= 0 and xx[0] < my_fpath_map.shape[0] and xx[1] >= 0 and xx[1] < my_fpath_map.shape[1]]
-                if fpath_map is not None and np.sum([fpath_map[nlne[0], nlne[1]] for nlne in new_loc_nes]) != 0:
+                if fpath_map != None and np.sum([fpath_map[nlne[0], nlne[1]] for nlne in new_loc_nes]) != 0:
                     break_flag = True
                     break
                 if my_npath_map[new_loc[0], new_loc[1]] != -1:
                     continue
-                if npath_map is not None and npath_map[new_loc[0], new_loc[1]] != edge_id:
+                if npath_map != None and npath_map[new_loc[0], new_loc[1]] != edge_id:
                     break_flag = True
                     break
                 fpath.append(new_loc)
@@ -519,7 +519,7 @@ def plan_path(mesh, info_on_pix, cc, end_pt, global_mesh, input_edge, mask, vali
                 new_loc_nes = [xx for xx in [(new_loc[0] + 1, new_loc[1]), (new_loc[0] - 1, new_loc[1]),
                                         (new_loc[0], new_loc[1] + 1), (new_loc[0], new_loc[1] - 1)]\
                                 if xx[0] >= 0 and xx[0] < my_fpath_map.shape[0] and xx[1] >= 0 and xx[1] < my_fpath_map.shape[1]]
-                if fpath_map is not None and np.all([(fpath_map[nlne[0], nlne[1]] == -1) for nlne in new_loc_nes]) != True:
+                if fpath_map != None and np.all([(fpath_map[nlne[0], nlne[1]] == -1) for nlne in new_loc_nes]) != True:
                     break_flag = True
                     break
                 if np.all([(my_fpath_map[nlne[0], nlne[1]] == -1) for nlne in new_loc_nes]) != True:
@@ -527,7 +527,7 @@ def plan_path(mesh, info_on_pix, cc, end_pt, global_mesh, input_edge, mask, vali
                     break 
                 if my_npath_map[new_loc[0], new_loc[1]] != -1:
                     continue
-                if npath_map is not None and npath_map[new_loc[0], new_loc[1]] != edge_id:
+                if npath_map != None and npath_map[new_loc[0], new_loc[1]] != edge_id:
                     break_flag = True
                     break
                 if valid_map[new_loc[0], new_loc[1]] == 0:
@@ -553,24 +553,24 @@ def refresh_node(old_node, old_feat, new_node, new_feat, mesh, stime=False):
     mesh.nodes[new_node].update(old_feat)
     for ne in mesh.neighbors(old_node):
         mesh.add_edge(new_node, ne)
-    if mesh.nodes[new_node].get('far') is not None:
+    if mesh.nodes[new_node].get('far') != None:
         tmp_far_nodes = mesh.nodes[new_node]['far']
         for far_node in tmp_far_nodes:
             if mesh.has_node(far_node) is False:
                 mesh.nodes[new_node]['far'].remove(far_node)
                 continue
-            if mesh.nodes[far_node].get('near') is not None:
+            if mesh.nodes[far_node].get('near') != None:
                 for idx in range(len(mesh.nodes[far_node].get('near'))):
                     if mesh.nodes[far_node]['near'][idx][0] == new_node[0] and mesh.nodes[far_node]['near'][idx][1] == new_node[1]:
                         if len(mesh.nodes[far_node]['near'][idx]) == len(old_node):
                             mesh.nodes[far_node]['near'][idx] = new_node
-    if mesh.nodes[new_node].get('near') is not None:
+    if mesh.nodes[new_node].get('near') != None:
         tmp_near_nodes = mesh.nodes[new_node]['near']
         for near_node in tmp_near_nodes:
             if mesh.has_node(near_node) is False:
                 mesh.nodes[new_node]['near'].remove(near_node)
                 continue        
-            if mesh.nodes[near_node].get('far') is not None:
+            if mesh.nodes[near_node].get('far') != None:
                 for idx in range(len(mesh.nodes[near_node].get('far'))):
                     if mesh.nodes[near_node]['far'][idx][0] == new_node[0] and mesh.nodes[near_node]['far'][idx][1] == new_node[1]:
                         if len(mesh.nodes[near_node]['far'][idx]) == len(old_node):
@@ -725,7 +725,7 @@ def clean_far_edge(mask_edge, mask_edge_with_id, context_edge, mask, info_on_pix
                                 start_near_node = (node_e[0], node_e[1])
                                 end_near_node = (node_s[0], node_s[1])
                                 break
-                if start_near_node is not None:
+                if start_near_node != None:
                     break
             if start_near_node is None:
                 continue
@@ -739,7 +739,7 @@ def clean_far_edge(mask_edge, mask_edge_with_id, context_edge, mask, info_on_pix
                 closest_pys = context_near_pys[np.where(distance == distance.min())[0]]
                 closest_depths = []
                 for closest_px, closest_py in zip(closest_pxs, closest_pys):
-                    if info_on_pix.get((closest_px + start_near_node[0] - 1 + anchor[0], closest_py + start_near_node[1] - 1 + anchor[2])) is not None:
+                    if info_on_pix.get((closest_px + start_near_node[0] - 1 + anchor[0], closest_py + start_near_node[1] - 1 + anchor[2])) != None:
                         for info in info_on_pix.get((closest_px + start_near_node[0] - 1 + anchor[0], closest_py + start_near_node[1] - 1 + anchor[2])):
                             if info['synthesis'] is False:
                                 closest_depths.append(abs(info['depth']))
@@ -749,11 +749,11 @@ def clean_far_edge(mask_edge, mask_edge_with_id, context_edge, mask, info_on_pix
             context_near_node = (start_near_node[0]-1 + context_near_px, start_near_node[1]-1 + context_near_py)
             far_node_list = []
             global_context_near_node = (context_near_node[0] + anchor[0], context_near_node[1] + anchor[2])
-            if info_on_pix.get(global_context_near_node) is not None:
+            if info_on_pix.get(global_context_near_node) != None:
                 for info in info_on_pix[global_context_near_node]:
                     if info['synthesis'] is False:
                         context_near_node_3d = (global_context_near_node[0], global_context_near_node[1], info['depth'])
-                        if global_mesh.nodes[context_near_node_3d].get('far') is not None:
+                        if global_mesh.nodes[context_near_node_3d].get('far') != None:
                             for far_node in global_mesh.nodes[context_near_node_3d].get('far'):
                                 far_node = (far_node[0] - anchor[0], far_node[1] - anchor[2], far_node[2])
                                 if mask[far_node[0], far_node[1]] == 0:
@@ -803,13 +803,13 @@ def clean_far_edge(mask_edge, mask_edge_with_id, context_edge, mask, info_on_pix
                                     start_far_node = (bevel_x, bevel_y)
                                     accompany_far_node = (ne[0], ne[1])
                                     break
-                            if start_far_node is not None:
+                            if start_far_node != None:
                                 break
-                if start_far_node is not None:
+                if start_far_node != None:
                     for far_edge_id in range(1, far_edge_cc.max() + 1):
                         specific_far_edge = (far_edge_cc == far_edge_id).astype(np.uint8)
                         if specific_far_edge[start_far_node[0], start_far_node[1]] == 1:
-                            if accompany_far_node is not None:
+                            if accompany_far_node != None:
                                 specific_far_edge[accompany_far_node] = 1
                             far_edge[specific_far_edge > 0] = 1
                             far_edge_with_id[specific_far_edge > 0] = edge_id
@@ -856,13 +856,13 @@ def get_MiDaS_samples(image_folder, depth_folder, config, specific=None, aft_cer
     tgt_pose = generic_pose * 1
     
     aft_flag = True
-    if aft_certain is not None and len(aft_certain) > 0:
+    if aft_certain != None and len(aft_certain) > 0:
         aft_flag = False
     for seq_dir in lines:
-        if specific is not None and len(specific) > 0:
+        if specific != None and len(specific) > 0:
             if specific != seq_dir:
                 continue
-        if aft_certain is not None and len(aft_certain) > 0:
+        if aft_certain != None and len(aft_certain) > 0:
             if aft_certain == seq_dir:
                 aft_flag = True
             if aft_flag is False:
@@ -911,7 +911,7 @@ def crop_maps_by_size(size, *imaps):
     return omaps
 
 def smooth_cntsyn_gap(init_depth_map, mask_region, context_region, init_mask_region=None):
-    if init_mask_region is not None:
+    if init_mask_region.all() != None:
         curr_mask_region = init_mask_region * 1
     else:
         curr_mask_region = mask_region * 0
@@ -947,7 +947,7 @@ def read_MiDaS_depth(disp_fi, disp_rescale=10., h=None, w=None):
     disp = disp - disp.min()
     disp = cv2.blur(disp / disp.max(), ksize=(3, 3)) * disp.max()
     disp = (disp / disp.max()) * disp_rescale
-    if h is not None and w is not None:
+    if h != None and w != None:
         disp = resize(disp / disp.max(), (h, w), order=1) * disp.max()
     depth = 1. / np.maximum(disp, 0.05)
 
@@ -972,7 +972,7 @@ def follow_image_aspect_ratio(depth, image):
     return depth
 
 def depth_resize(depth, origin_size, image_size):
-    if origin_size[0] is not 0:
+    if origin_size[0] != 0:
         max_depth = depth.max()
         depth = depth / max_depth
         depth = resize(depth, origin_size, order=1, mode='edge')
@@ -1026,7 +1026,7 @@ def filter_irrelevant_edge(self_edge, other_edges, other_edges_with_id, current_
                             ny = x[1] - anchor[1]
                             if nx == end_px and ny == end_py:
                                 # other_edges_info[-1]['near_depth'] = abs(nx)
-                                if mesh.nodes[x].get('far') is not None and len(mesh.nodes[x].get('far')) == 1:
+                                if mesh.nodes[x].get('far') != None and len(mesh.nodes[x].get('far')) == 1:
                                     other_edges_info[-1]['diff'] = abs(1./abs([*mesh.nodes[x].get('far')][0][2]) - 1./abs(x[2]))
                                 else:
                                     other_edges_info[-1]['diff'] = 0
@@ -1076,12 +1076,12 @@ def refine_color_around_edge(mesh, info_on_pix, edge_ccs, config, spdb=False):
         for i in range(5):
             if i == 0:
                 for edge_node in edge_cc:
-                    if mesh.nodes[edge_node].get('depth_edge_dilate_2_color_flag') is not True:
+                    if mesh.nodes[edge_node].get('depth_edge_dilate_2_color_flag') != True:
                         break
                     if mesh.nodes[edge_node].get('inpaint_id') == 1:
                         near_nodes.add(edge_node)
                         tmp_node = mesh.nodes[edge_node].get('far')
-                        tmp_node = set(tmp_node) if tmp_node is not None else set()
+                        tmp_node = set(tmp_node) if tmp_node != None else set()
                         tmp_far_nodes |= tmp_node
                 rmv_tmp_far_nodes = set()
                 for far_node in tmp_far_nodes:
@@ -1212,7 +1212,7 @@ def refine_color_around_edge(mesh, info_on_pix, edge_ccs, config, spdb=False):
             plt.show()
             import pdb; pdb.set_trace()
         for node in refine_nodes:
-            if mesh.nodes[node].get('refine_rgbd') is not None:
+            if mesh.nodes[node].get('refine_rgbd') != None:
                 mesh.nodes[node].pop('refine_rgbd')
                 mesh.nodes[node]['color'] = mesh.nodes[node]['backup_color']
                 for info in info_on_pix[(node[0], node[1])]:
